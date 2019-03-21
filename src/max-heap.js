@@ -25,8 +25,8 @@ class MaxHeap {
 
 	detachRoot() {
 		let index = this.parentNodes.indexOf(this.root);
-		if (index !=-1) {
-			this.parentNodes.splice(index,1);
+		if (index != -1) {
+			this.parentNodes.splice(index, 1);
 		}
 		const root = this.root;
 		this.root = null;
@@ -34,28 +34,39 @@ class MaxHeap {
 	}
 
 	restoreRootFromLastInsertedNode(detached) {
-		let lastInsertedNode = this.parentNodes[this.parentNodes.length-1];
+		let lastInsertedNode = this.parentNodes[this.parentNodes.length - 1];
 		this.parentNodes.pop();
+		if ((lastInsertedNode != undefined)){
+			if ((lastInsertedNode.parent != detached) && (this.parentNodes.indexOf(lastInsertedNode.parent) == -1)) {
+				this.parentNodes.unshift(lastInsertedNode.parent);
+			}
+			if ((lastInsertedNode.parent != null) && (lastInsertedNode.parent.left == lastInsertedNode)) {
+				lastInsertedNode.parent.left = null;
+			}
+	
+			if ((lastInsertedNode.parent != null) && (lastInsertedNode.parent.right == lastInsertedNode)) {
+				lastInsertedNode.parent.right = null;
+			}
+		
 		this.root = lastInsertedNode;
 		this.root.parent = null;
-		if (detached.left !=null) {
-			this.root.left = detached.left;
-			this.root.left.parent = this.root;
+		if ((detached.left == null) || (detached.right == null)) {
+			this.parentNodes.unshift(this.root);
 		}
-		else {
-			this.root.left = null;
+		if (detached.left != null) {
+		  this.root.left = detached.left;
+		  this.root.left.parent = this.root;
+		} else {
+		  this.root.left = null;
 		}
-		if (detached.right !=null) {
-			this.root.right = detached.right;
-			this.root.right.parent = this.root;
-		}
-		else {
-			this.root.right = null;
-		}
-		if (this.parentNodes.indexOf(lastInsertedNode.parent) ==-1) {
-			this.parentNodes.unshift(lastInsertedNode.parent);
-		}
-	}
+		if (detached.right != null) {
+		  this.root.right = detached.right;
+		  this.root.right.parent = this.root;
+		} else {
+		  this.root.right = null;
+		}   
+		} 
+	  }
 
 	size() {
 		return this.sizeHeap;
@@ -111,11 +122,11 @@ class MaxHeap {
 	shiftNodeDown(node) {
 		const isRoot = node == this.root;
         let child;
-        if (node.left == null) {
+        if ((node != null) && (node.left == null)) {
             child = node.right;
-        } else if (node.right == null) {
+        } else if ((node != null) && (node.right == null)) {
             child = node.left;
-        } else {
+        } else if (node != null) {
             child = node.left.priority >= node.right.priority
                     ? node.left
                     : node.right;

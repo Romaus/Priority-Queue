@@ -17,7 +17,7 @@ class PriorityQueue {
 
 	shift() {
 		if (this.heap.sizeHeap > 0) {
-		//return this.heap.pop();
+		return this.heap.pop();
 		}
 		else {
 			throw 'error';
